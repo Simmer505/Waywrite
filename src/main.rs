@@ -3,8 +3,8 @@ use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt, WidgetExt, Ge
 use gtk::cairo::{Context, Operator};
 use relm4::drawing::DrawHandler;
 
-use hwocr::process_point::to_matrix;
-use hwocr::Point;
+use waywrite::process_point::to_matrix;
+use waywrite::Point;
 
 #[derive(Debug)]
 enum AppInput {
@@ -33,9 +33,9 @@ impl SimpleComponent for AppModel {
 
     view! {
         gtk::Window {
-            set_title: Some("Simple"),
-            set_default_width: 400,
-            set_default_height: 100,
+            set_title: Some("Waywrite"),
+            set_default_width: 600,
+            set_default_height: 200,
 
             gtk::Box{
                 set_orientation: gtk::Orientation::Horizontal,
@@ -48,10 +48,6 @@ impl SimpleComponent for AppModel {
                     set_spacing: 5,
                     set_margin_all: 5,
                     set_vexpand: true,
-
-                    gtk::Label {
-                        set_label: "Draw something",
-                    },
 
                     #[local_ref]
                     area -> gtk::DrawingArea {
@@ -77,23 +73,17 @@ impl SimpleComponent for AppModel {
                     set_halign: gtk::Align::End,
 
                     gtk::Button {
-                        set_label: "Increment",
+                        set_label: "Enter",
                         connect_clicked[sender] => move |_| {
                             sender.input(AppInput::Input);
                         }
                     },
 
                     gtk::Button {
-                        set_label: "Decrement",
+                        set_label: "Erase",
                         connect_clicked[sender] => move |_| {
                             sender.input(AppInput::Reset);
                         }
-                    },
-
-                    gtk::Label {
-                        #[watch]
-                        set_label: &format!("Counter: {}", model.counter),
-                        set_margin_all: 5,
                     },
                 }
             }
@@ -123,6 +113,7 @@ impl SimpleComponent for AppModel {
 
         match message {
             AppInput::Input => {
+                println!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
                 let mat = to_matrix(&self.points);
                 for line in mat.iter() {
                     line.iter().for_each(|x| print!("{}", x));
@@ -163,6 +154,6 @@ fn draw(cx: &Context, points: &[Point]) {
 }
 
 fn main() {
-    let app = RelmApp::new("relm4.test.simple");
+    let app = RelmApp::new("simmer505.waywrite");
     app.run::<AppModel>(0);
 }
