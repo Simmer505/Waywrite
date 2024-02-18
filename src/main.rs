@@ -3,21 +3,17 @@ use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt, WidgetExt, Ge
 use gtk::cairo::{Context, Operator};
 use relm4::drawing::DrawHandler;
 
+use hwocr::process_point::to_matrix;
+use hwocr::Point;
 
 #[derive(Debug)]
 enum AppInput {
-    Increment,
+    Input,
     NewLine((f64, f64)),
     AddPoint((f64, f64)),
     Reset,
 }
 
-#[derive(Debug)]
-struct Point {
-    x: f64,
-    y: f64,
-    new_line: bool,
-}
 
 #[derive(Debug)]
 struct AppModel {
@@ -83,7 +79,7 @@ impl SimpleComponent for AppModel {
                     gtk::Button {
                         set_label: "Increment",
                         connect_clicked[sender] => move |_| {
-                            sender.input(AppInput::Increment);
+                            sender.input(AppInput::Input);
                         }
                     },
 
@@ -126,8 +122,12 @@ impl SimpleComponent for AppModel {
         let cx = self.handler.get_context();
 
         match message {
-            AppInput::Increment => {
-                self.counter = self.counter.wrapping_add(1);
+            AppInput::Input => {
+                let mat = to_matrix(&self.points);
+                for line in mat.iter() {
+                    line.iter().for_each(|x| print!("{}", x));
+                    println!();
+                }
             }
             AppInput::AddPoint((x, y)) => {
                 self.points.push(Point { x, y, new_line: false })

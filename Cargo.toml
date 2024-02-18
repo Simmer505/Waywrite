@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 relm4="0.6.*"
+rten-tensor = "0.4.*"

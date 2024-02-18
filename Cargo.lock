@@ -546,6 +546,7 @@ name = "hwocr"
 version = "0.1.0"
 dependencies = [
  "relm4",
+ "rten-tensor",
 ]
 
 [[package]]
@@ -789,6 +790,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.48",
+]
+
+[[package]]
+name = "rten-tensor"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b994b2c4597280249d6beb99fe01dd0adf06b0f002c2049a07708f09aed55c3a"
+dependencies = [
+ "smallvec",
 ]
 
 [[package]]
