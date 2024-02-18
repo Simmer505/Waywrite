@@ -7,7 +7,7 @@ use relm4::drawing::DrawHandler;
 #[derive(Debug)]
 enum AppInput {
     Increment,
-    Decrement,
+    NewLine((f64, f64)),
     AddPoint((f64, f64)),
     Reset,
 }
@@ -16,6 +16,7 @@ enum AppInput {
 struct Point {
     x: f64,
     y: f64,
+    new_line: bool,
 }
 
 #[derive(Debug)]
@@ -64,8 +65,11 @@ impl SimpleComponent for AppModel {
                         add_controller = gtk::GestureStylus {
                             set_button: 0,
                             connect_motion[sender] => move |_, x, y| {
-                                    sender.input(AppInput::AddPoint((x, y)));
+                                sender.input(AppInput::AddPoint((x, y)));
                             },
+                            connect_down[sender] => move |_, x, y| {
+                                sender.input(AppInput::NewLine((x, y)));
+                            }
                         }
                     },
                 },
@@ -86,7 +90,7 @@ impl SimpleComponent for AppModel {
                     gtk::Button {
                         set_label: "Decrement",
                         connect_clicked[sender] => move |_| {
-                            sender.input(AppInput::Decrement);
+                            sender.input(AppInput::Reset);
                         }
                     },
 
@@ -125,19 +129,17 @@ impl SimpleComponent for AppModel {
             AppInput::Increment => {
                 self.counter = self.counter.wrapping_add(1);
             }
-            AppInput::Decrement => {
-                self.counter = self.counter.wrapping_sub(1);
-            }
             AppInput::AddPoint((x, y)) => {
-                self.points.push(Point {
-                    x,
-                    y,
-                })
+                self.points.push(Point { x, y, new_line: false })
+            }
+            AppInput::NewLine((x, y)) => {
+                self.points.push(Point { x, y, new_line: true })
             }
             AppInput::Reset => {
                 cx.set_operator(Operator::Clear);
                 cx.set_source_rgba(0.0, 0.0, 0.0, 0.0);
                 cx.paint().expect("Could not fill context");
+                self.points = Vec::new();
             }
         }
 
@@ -146,9 +148,9 @@ impl SimpleComponent for AppModel {
 }
 
 fn draw(cx: &Context, points: &[Point]) {
-    for (i, point) in points.into_iter().enumerate() {
+    for (i, point) in points.into_iter().enumerate().filter(|(i, _)| *i != 0) {
         
-        if i > 0 {
+        if !point.new_line {
             let last_point = &points[i - 1];
 
             cx.move_to(last_point.x, last_point.y);
