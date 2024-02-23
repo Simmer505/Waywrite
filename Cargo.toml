@@ -6,5 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-relm4="0.6.*"
-rten-tensor = "0.4.*"
+relm4 = "0.6.*"
+rten-tensor = "0.3.*"
+rten = "0.3.1"
+ocrs = "0.4.*"

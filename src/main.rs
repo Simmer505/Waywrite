@@ -3,7 +3,7 @@ use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt, WidgetExt, Ge
 use gtk::cairo::{Context, Operator};
 use relm4::drawing::DrawHandler;
 
-use waywrite::process_point::to_matrix;
+use waywrite::process_point::print_written;
 use waywrite::Point;
 
 #[derive(Debug)]
@@ -113,12 +113,7 @@ impl SimpleComponent for AppModel {
 
         match message {
             AppInput::Input => {
-                println!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                let mat = to_matrix(&self.points);
-                for line in mat.iter() {
-                    line.iter().for_each(|x| print!("{}", x));
-                    println!();
-                }
+                print_written(&self.points).unwrap();
             }
             AppInput::AddPoint((x, y)) => {
                 self.points.push(Point { x, y, new_line: false })
@@ -144,8 +139,8 @@ fn draw(cx: &Context, points: &[Point]) {
         if !point.new_line {
             let last_point = &points[i - 1];
 
-            cx.move_to(last_point.x, last_point.y);
-            cx.line_to(point.x, point.y);
+            cx.move_to(last_point.x as f64, last_point.y as f64);
+            cx.line_to(point.x as f64, point.y as f64);
             cx.set_source_rgb(200.0, 200.0, 200.0);
             cx.set_line_width(2.0);
             cx.stroke().expect("Failed to draw line");
