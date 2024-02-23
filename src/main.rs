@@ -3,7 +3,7 @@ use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt, WidgetExt, Ge
 use gtk::cairo::{Context, Operator};
 use relm4::drawing::DrawHandler;
 
-use waywrite::process_point::print_written;
+use waywrite::process_point::print_words;
 use waywrite::Point;
 
 #[derive(Debug)]
@@ -113,7 +113,7 @@ impl SimpleComponent for AppModel {
 
         match message {
             AppInput::Input => {
-                print_written(&self.points).unwrap();
+                print_words(&self.points).unwrap();
             }
             AppInput::AddPoint((x, y)) => {
                 self.points.push(Point { x, y, new_line: false })
